@@ -1,7 +1,7 @@
 const Card1 = () => {
     const name = "Ava";
     const title = "UX designer";
-    const image = "https://i.pravatar.cc/150?img=5";
+    const image = "https://randomuser.me/api/portraits/women/45.jpg";
 
     return (
         <div className="card">

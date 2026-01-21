@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import Card1 from "./styles/components/Card1";
-import Card2 from "./styles/components/Card2"
-import Header from "./styles/components/Header"
-import Introduction from "./styles/components/Introduction"
+import Card1 from "./components/Card1"
+import Card2 from "./components/Card2"
+import Header from "./components/Header"
+import Introduction from "./components/Introduction"
 import './App.css'
 
 function App() {

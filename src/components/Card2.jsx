@@ -2,7 +2,7 @@
 const Card2 = () => {
     const name = "John";
     const title = "Web Designer";
-    const image = "https://i.pravatar.cc/150?img=3";
+    const image = "https://randomuser.me/api/portraits/men/32.jpg";
 
     return (
         <div className="card">
