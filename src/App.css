@@ -50,3 +50,31 @@
   color: #6c6cff;
   font-weight: bold;
 }
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+}
+.controls select, .controls input {
+  padding: 6px 8px;
+  font-size: 14px;
+}
+.controls button {
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: #6c6cff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.controls button:hover {
+  background-color: #1d4ed8;
+}
+.section {
+  padding: 16px;
+}
+.section h2 {
+  text-align: center;
+  margin-bottom: 16px;
+}
