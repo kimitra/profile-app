@@ -1,5 +1,6 @@
 .app {
-  width: 100%;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 .navbar {
   background-color: #6c6cff;
@@ -18,37 +19,13 @@
   gap: 32px;
   margin-top: 32px;
 }
-.card {
-  background-color: #f9f9f9;
-  padding: 16px;
-  width: 160px;
-  border-radius: 10px;
-  text-align: center;
-}
-.card img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-}
 .card h3{
   margin-top: 8px;
   margin-bottom: 4px;
 }
-.card p {
-  margin: 0;
-  font-size: 14px;
-  color: gray;
-}
 .section {
   padding: 32px;
   text-align: center;
-}
-.card.featured {
-  border: 2px solid #6c6cff;
-}
-.badge {
-  color: #6c6cff;
-  font-weight: bold;
 }
 .controls {
   display: flex;
@@ -77,4 +54,53 @@
 .section h2 {
   text-align: center;
   margin-bottom: 16px;
+}
+.app.light {
+  background-color: white;
+  color: black;
+}
+.app.dark {
+  background-color: #111827;
+  color: white;
+}
+.app.dark .section h2,
+.app.dark .about {
+  color: white;
+}
+.app.light .section h2,
+.app.light .about {
+  color: black;
+}
+.app.dark .controls select,
+.app.dark .controls input {
+  background-color: #1f2933;
+  color: white;
+  border: 1px solid #374151;
+}
+.app.dark .controls button {
+  background-color: #6c6cff;
+}
+.mode-text {
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.app.dark .mode-text {
+  color:#d1d5db;
+}
+.app.light .mode-text {
+  color: #374151;
+}
+.mode-button {
+  display: block;
+  margin: 16px auto;
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: #6c6cff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.mode-button:hover {
+    background-color: #1d4ed8;
 }

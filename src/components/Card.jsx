@@ -1,15 +1,20 @@
-const Card = ({image, name, year, major, isFeatured}) => {
-    
+import styles from "./Card.module.css";
 
-    return (
-        <div className={`card ${isFeatured ? "featured" : ""}`}>
-            <img src={image} alt={name} className="card-img" />
-            <h3>{name}</h3>
-            <p>Year: {year}</p>
-            <p>Major: {major}</p>
-
-            {isFeatured && <p className="badge">Featured</p>}
-        </div>
-    );
+const Card = ({ name, year, major, image, isFeatured, mode }) => {
+  return (
+    <div
+      className={`
+        ${styles.card}
+        ${mode === "dark" ? styles.dark : ""}
+        ${isFeatured ? styles.featured : ""}
+      `}
+    >
+      <img src={image} alt={name} className={styles.image} />
+      <h3>{name}</h3>
+      <p>{year}</p>
+      <p>{major}</p>
+    </div>
+  );
 };
+
 export default Card;

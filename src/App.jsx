@@ -5,8 +5,11 @@ import Introduction from "./components/Introduction";
 import Header from "./components/Header";
 import "./App.css";
 
+
+
 const App = () => {
 
+  const [mode, setMode] = useState("light");
   const [selectedTitle, setSelectedTitle] = useState("All");
   const [searchText, setSearchText] = useState("");
 
@@ -67,35 +70,55 @@ const App = () => {
     setSearchText("");
   };
 
+  const toggleMode = () => {
+    setMode(mode === "light" ? "dark" : "light");
+  };
+
   return (
-    <>
-      <Header />
-      <Introduction />
+    <div className={`app ${mode}`}>
+    <Header />
+    <Introduction />
 
-      <div className="controls">
-        <select value={selectedTitle} onChange={handleTitleChange}>
-          <option value="All">All</option>
-          <option value="Student">Student</option>
-          <option value="TA">TA</option>
-        </select>
-        <input type="text" placeholder="Search by name" value={searchText} onChange={handleSearchChange} />
-        <button onClick={handleReset}>Reset</button>
-      </div>
+    <button className="mode-button" onClick={toggleMode}>
+      Switch to {mode === "light" ? "Dark" : "Light"} Mode
+    </button>
 
-      <Section title="Student Profiles">
-        {filteredProfiles.map((profile, index) => (
-          <Card
-            key={index}
-            image={profile.image}
-            name={profile.name}
-            title={profile.title}
-            year={profile.year}
-            major={profile.major}
-            isFeatured={profile.isFeatured}
-          />
-        ))}
-      </Section>
-    </>
+    {mode === "dark" && (
+      <p className="mode-text">Dark mode is enabled</p>
+    )}
+
+    <div className="controls">
+      <select value={selectedTitle} onChange={handleTitleChange}>
+        <option value="All">All</option>
+        <option value="Student">Student</option>
+        <option value="TA">TA</option>
+      </select>
+
+      <input
+        type="text"
+        placeholder="Search by name"
+        value={searchText}
+        onChange={handleSearchChange}
+      />
+
+      <button onClick={handleReset}>Reset</button>
+    </div>
+
+    <Section title="Student Profiles">
+      {filteredProfiles.map((profile, index) => (
+        <Card
+          key={index}
+          image={profile.image}
+          name={profile.name}
+          title={profile.title}
+          year={profile.year}
+          major={profile.major}
+          isFeatured={profile.isFeatured}
+          mode={mode}
+        />
+      ))}
+    </Section>
+  </div>
   );
 };
 
