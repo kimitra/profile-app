@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./AddProfile.css";
 
-const AddProfile = () => {
+const AddProfile = ( { onAddProfile }) => {
     const [values, setValues] = useState({
         name: "",
         email: "",
@@ -77,7 +77,20 @@ const AddProfile = () => {
             setErrors(newErrors);
             return;
         }
-        setSubmitting(true);
+        const newProfile = {
+            name: values.name,
+            email: values.email,
+            title: values.title,
+            bio: values.bio,
+            year: "New",
+            major: values.title,
+            isFeatured: false,
+            image: values.image
+                ? URL.createObjectURL(values.image)
+                : "https://via.placeholder.com/150",
+        };
+
+    onAddProfile(newProfile);
 
         setTimeout(() => {
             setSuccessMessage("Profile added successfully!");

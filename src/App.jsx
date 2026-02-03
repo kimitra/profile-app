@@ -15,7 +15,7 @@ const App = () => {
   const [selectedTitle, setSelectedTitle] = useState("All");
   const [searchText, setSearchText] = useState("");
 
-  const profiles = [
+  const [profiles, setProfiles] = useState([
     {
       image: "https://pbs.twimg.com/profile_images/2014810779845808128/m8uW-qWB_400x400.jpg",
       name: "Shane Hollander",
@@ -48,7 +48,11 @@ const App = () => {
       major: "Web Design",
       isFeatured: false,
     },
-  ];
+  ]);
+
+  const addProfile = (newProfile) => {
+    setProfiles((prevProfiles) => [...prevProfiles, newProfile]);
+  };
 
   const filteredProfiles = profiles.filter((profile) => {
     const matchesTitle =
@@ -120,7 +124,7 @@ const App = () => {
         />
       ))}
     </Section>
-    <AddProfile />
+    <AddProfile onAddProfile={addProfile} />
   </div>
   );
 };
