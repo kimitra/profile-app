@@ -1,0 +1,30 @@
+.add-profile{
+    max-width: 400px;
+    margin: 32px auto;
+    padding: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+.add-profile h2{
+    text-align: center;
+}
+.add-profile label{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+.add-profile input,
+.add-profile textarea {
+    padding: 6px;
+    margin-top: 4px;
+}
+.error{
+    color: red;
+    font-size: 12px;
+}
+.success{
+    color: green;
+    text-align: center;
+    margin-top: 12px;
+}

@@ -3,7 +3,9 @@ import Card from "./components/Card";
 import Section from "./components/Section";
 import Introduction from "./components/Introduction";
 import Header from "./components/Header";
+import AddProfile from "./components/AddProfile";
 import "./App.css";
+
 
 
 
@@ -31,7 +33,7 @@ const App = () => {
       isFeatured: false,
     },
     {
-      image: "https://pbs.twimg.com/profile_images/2015558340319797248/A6TbRBuq_400x400.jpg",
+      image: "https://pbs.twimg.com/profile_images/2016633591388569602/LUDaWUDR_400x400.jpg",
       name: "Rose Landry",
       title: "TA",
       year: "Junior",
@@ -118,6 +120,7 @@ const App = () => {
         />
       ))}
     </Section>
+    <AddProfile />
   </div>
   );
 };
