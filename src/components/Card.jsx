@@ -1,6 +1,6 @@
 import styles from "./Card.module.css";
 
-const Card = ({ name, year, major, image, isFeatured, mode }) => {
+const Card = ({ name, year, major, bio, title, image, isFeatured, mode }) => {
   return (
     <div
       className={`
@@ -12,7 +12,8 @@ const Card = ({ name, year, major, image, isFeatured, mode }) => {
       <img src={image} alt={name} className={styles.image} />
       <h3>{name}</h3>
       <p>{year}</p>
-      <p>{major}</p>
+      <p>{major || title}</p>
+      <p>{bio}</p>
     </div>
   );
 };

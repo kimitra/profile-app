@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "./components/Card";
 import Section from "./components/Section";
 import Introduction from "./components/Introduction";
@@ -14,6 +14,9 @@ const App = () => {
   const [mode, setMode] = useState("light");
   const [selectedTitle, setSelectedTitle] = useState("All");
   const [searchText, setSearchText] = useState("");
+  const [titles, setTitles] = useState([]);
+  const [fetchedProfiles, setFetchedProfiles] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [profiles, setProfiles] = useState([
     {
@@ -49,6 +52,29 @@ const App = () => {
       isFeatured: false,
     },
   ]);
+
+  useEffect(() => {
+    fetch("https://web.ics.purdue.edu/~zong6/profile-app/get-titles.php")
+    .then((res) => res.json())
+    .then((data) => setTitles(data.titles || []))
+    .catch((err) => console.error(err));
+  }, []);
+
+ useEffect(() => {
+    setLoading(true);
+
+    const url = `https://web.ics.purdue.edu/~zong6/profile-app/fetch-data-with-filter.php?title=${
+      selectedTitle === "All" ? "" : selectedTitle
+    }&name=${searchText}&page=1&limit=10`;
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        setFetchedProfiles(data.profiles || []);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+}, [selectedTitle, searchText]);
 
   const addProfile = (newProfile) => {
     setProfiles((prevProfiles) => [...prevProfiles, newProfile]);
@@ -94,17 +120,25 @@ const App = () => {
     )}
 
     <div className="controls">
-      <select value={selectedTitle} onChange={handleTitleChange}>
+      <select
+          value={selectedTitle}
+          onChange={(e) => setSelectedTitle(e.target.value)}
+        >
         <option value="All">All</option>
-        <option value="Student">Student</option>
         <option value="TA">TA</option>
+        <option value="Student">Student</option>
+          {titles.map((title, index) => (
+            <option key={index} value={title}>
+              {title}
+            </option>
+          ))}
       </select>
 
       <input
         type="text"
         placeholder="Search by name"
         value={searchText}
-        onChange={handleSearchChange}
+        onChange={(e) => setSearchText(e.target.value)}
       />
 
       <button onClick={handleReset}>Reset</button>
@@ -122,6 +156,22 @@ const App = () => {
           isFeatured={profile.isFeatured}
           mode={mode}
         />
+      ))}
+    </Section>
+    <Section title="Fetched Profiles">
+      {loading && <p>Loading...</p>}
+      {!loading && fetchedProfiles.map((profile, index) => (
+        <Card
+          key={index}
+          image={profile.image_url || "https://via.placeholder.com/80"}
+          name={profile.name}
+          title={profile.title}
+          year={profile.year}
+          major={profile.major}
+          bio={profile.bio}
+          isFeatured={false}
+          mode={mode}
+          />
       ))}
     </Section>
     <AddProfile onAddProfile={addProfile} />
