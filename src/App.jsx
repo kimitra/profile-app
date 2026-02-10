@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
+import { HashRouter, Routes, Route, Link } from "react-router-dom";
 import Card from "./components/Card";
 import Section from "./components/Section";
 import Introduction from "./components/Introduction";
 import Header from "./components/Header";
 import AddProfile from "./components/AddProfile";
+import Home from "./pages/Home";
+import AddProfilePage from "./pages/AddProfilePage";
+import FetchedProfilePage from "./pages/FetchedProfilePage";
+import About from "./pages/AboutPage";
+import NotFound from "./pages/NotFound";
 import "./App.css";
 
 
@@ -107,8 +113,14 @@ const App = () => {
   };
 
   return (
+    <HashRouter>
     <div className={`app ${mode}`}>
-    <Header />
+      <nav className="navbar">
+      <Link to="/">Home</Link>
+      <Link to="/add">Add Profile</Link>
+      <Link to="/fetched">Fetched Profiles</Link>
+      <Link to="/about">About</Link>
+    </nav>
     <Introduction />
 
     <button className="mode-button" onClick={toggleMode}>
@@ -118,7 +130,17 @@ const App = () => {
     {mode === "dark" && (
       <p className="mode-text">Dark mode is enabled</p>
     )}
-
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/add" element={
+        <AddProfilePage titles={titles} onAddProfile={addProfile} />
+      } />
+      <Route path="/fetched" element={
+        <FetchedProfilePage fetchedProfiles ={fetchedProfiles} loading={loading} mode={mode} />
+      } />
+      <Route path="/about" element={<About />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
     <div className="controls">
       <select
           value={selectedTitle}
@@ -158,24 +180,9 @@ const App = () => {
         />
       ))}
     </Section>
-    <Section title="Fetched Profiles">
-      {loading && <p>Loading...</p>}
-      {!loading && fetchedProfiles.map((profile, index) => (
-        <Card
-          key={index}
-          image={profile.image_url || "https://via.placeholder.com/80"}
-          name={profile.name}
-          title={profile.title}
-          year={profile.year}
-          major={profile.major}
-          bio={profile.bio}
-          isFeatured={false}
-          mode={mode}
-          />
-      ))}
-    </Section>
-    <AddProfile onAddProfile={addProfile} />
+    
   </div>
+  </HashRouter>
   );
 };
 

@@ -104,3 +104,18 @@
 .mode-button:hover {
     background-color: #1d4ed8;
 }
+.not-found {
+  text-align: center;
+  margin-top: 64px;
+}
+h2 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+h3 {
+  text-align: center;
+  margin-bottom: 16px;
+}
+p {
+  text-align: center;
+}
