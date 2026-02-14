@@ -10,6 +10,8 @@ import AddProfilePage from "./pages/AddProfilePage";
 import FetchedProfilePage from "./pages/FetchedProfilePage";
 import About from "./pages/AboutPage";
 import NotFound from "./pages/NotFound";
+import ProfileLayout from "./pages/ProfileLayout";
+import ProfileDetail from "./pages/ProfileDetail";
 import "./App.css";
 
 
@@ -140,6 +142,9 @@ const App = () => {
       } />
       <Route path="/about" element={<About />} />
       <Route path="*" element={<NotFound />} />
+      <Route path="/profile" element={<ProfileLayout />}>
+        <Route path=":id" element={<ProfileDetail mode={mode} />} />
+      </Route>
     </Routes>
     <div className="controls">
       <select

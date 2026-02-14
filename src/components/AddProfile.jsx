@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./AddProfile.css";
+import { useNavigate } from "react-router-dom";
 
 const AddProfile = ( { onAddProfile }) => {
     const [values, setValues] = useState({
@@ -9,7 +10,7 @@ const AddProfile = ( { onAddProfile }) => {
         bio: "",
         image: null,
     });
-
+    const navigate = useNavigate();
     const [errors, setErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState("");
     const [submitting, setSubmitting] = useState(false);
@@ -61,7 +62,7 @@ const AddProfile = ( { onAddProfile }) => {
         setValues((prev) => ({ ...prev, image: file }));
         setErrors((prev) => ({ ...prev, image: "" }));
     };
-
+    
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -91,7 +92,8 @@ const AddProfile = ( { onAddProfile }) => {
         };
 
     onAddProfile(newProfile);
-
+    navigate("/", { replace: true });
+    
         setTimeout(() => {
             setSuccessMessage("Profile added successfully!");
             setValues({
@@ -105,6 +107,7 @@ const AddProfile = ( { onAddProfile }) => {
             e.target.reset();
             setSubmitting(false);
         }, 800);
+        
     };
 
     return (
