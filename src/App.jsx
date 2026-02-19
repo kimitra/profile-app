@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { HashRouter, Routes, Route, Link } from "react-router-dom";
 import Card from "./components/Card";
 import Section from "./components/Section";
@@ -12,7 +12,6 @@ import About from "./pages/AboutPage";
 import NotFound from "./pages/NotFound";
 import ProfileLayout from "./pages/ProfileLayout";
 import ProfileDetail from "./pages/ProfileDetail";
-import { useContext } from "react";
 import ModeContext from "./context/ModeContext";
 import TitlesContext from "./context/TitlesContext";
 import "./App.css";

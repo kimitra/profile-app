@@ -8,9 +8,11 @@ import { ModeProvider } from "./context/ModeContext";
 import { TitlesProvider } from "./context/TitlesContext";
 
 createRoot(document.getElementById('root')).render(
-  <ModeProvider>
-    <TitlesProvider>
-      <App />
-    </TitlesProvider>
-  </ModeProvider>
+  <StrictMode>
+    <ModeProvider>
+      <TitlesProvider>
+        <App />
+      </TitlesProvider>
+    </ModeProvider>
+  </StrictMode>
 )
