@@ -12,6 +12,9 @@ import About from "./pages/AboutPage";
 import NotFound from "./pages/NotFound";
 import ProfileLayout from "./pages/ProfileLayout";
 import ProfileDetail from "./pages/ProfileDetail";
+import { useContext } from "react";
+import ModeContext from "./context/ModeContext";
+import TitlesContext from "./context/TitlesContext";
 import "./App.css";
 
 
@@ -19,10 +22,10 @@ import "./App.css";
 
 const App = () => {
 
-  const [mode, setMode] = useState("light");
+  const { mode, toggleMode } = useContext(ModeContext);
+  const { titles } = useContext(ModeContext);
   const [selectedTitle, setSelectedTitle] = useState("All");
   const [searchText, setSearchText] = useState("");
-  const [titles, setTitles] = useState([]);
   const [fetchedProfiles, setFetchedProfiles] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -62,13 +65,6 @@ const App = () => {
   ]);
 
   useEffect(() => {
-    fetch("https://web.ics.purdue.edu/~zong6/profile-app/get-titles.php")
-    .then((res) => res.json())
-    .then((data) => setTitles(data.titles || []))
-    .catch((err) => console.error(err));
-  }, []);
-
- useEffect(() => {
     setLoading(true);
 
     const url = `https://web.ics.purdue.edu/~zong6/profile-app/fetch-data-with-filter.php?title=${
@@ -82,10 +78,11 @@ const App = () => {
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-}, [selectedTitle, searchText]);
+
+  }, [selectedTitle, searchText]);
 
   const addProfile = (newProfile) => {
-    setProfiles((prevProfiles) => [...prevProfiles, newProfile]);
+    setProfiles((prev) => [...prev, newProfile]);
   };
 
   const filteredProfiles = profiles.filter((profile) => {
@@ -98,97 +95,94 @@ const App = () => {
     return matchesTitle && matchesSearch;
   });
 
-  const handleTitleChange = (event) => {
-    setSelectedTitle(event.target.value);
-  };
-  const handleSearchChange = (event) => {
-    setSearchText(event.target.value);
-  };
-
   const handleReset = () => {
     setSelectedTitle("All");
     setSearchText("");
   };
 
-  const toggleMode = () => {
-    setMode(mode === "light" ? "dark" : "light");
-  };
-
   return (
     <HashRouter>
-    <div className={`app ${mode}`}>
-      <nav className="navbar">
-      <Link to="/">Home</Link>
-      <Link to="/add">Add Profile</Link>
-      <Link to="/fetched">Fetched Profiles</Link>
-      <Link to="/about">About</Link>
-    </nav>
-    <Introduction />
+      <div className={`app ${mode}`}>
 
-    <button className="mode-button" onClick={toggleMode}>
-      Switch to {mode === "light" ? "Dark" : "Light"} Mode
-    </button>
+        <nav className="navbar">
+          <Link to="/">Home</Link>
+          <Link to="/add">Add Profile</Link>
+          <Link to="/fetched">Fetched Profiles</Link>
+          <Link to="/about">About</Link>
+          <button className="mode-button" onClick={toggleMode}>
+            Switch to {mode === "light" ? "Dark" : "Light"} Mode
+            </button>
+        </nav>
 
-    {mode === "dark" && (
-      <p className="mode-text">Dark mode is enabled</p>
-    )}
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/add" element={
-        <AddProfilePage titles={titles} onAddProfile={addProfile} />
-      } />
-      <Route path="/fetched" element={
-        <FetchedProfilePage fetchedProfiles ={fetchedProfiles} loading={loading} mode={mode} />
-      } />
-      <Route path="/about" element={<About />} />
-      <Route path="*" element={<NotFound />} />
-      <Route path="/profile" element={<ProfileLayout />}>
-        <Route path=":id" element={<ProfileDetail mode={mode} />} />
-      </Route>
-    </Routes>
-    <div className="controls">
-      <select
-          value={selectedTitle}
-          onChange={(e) => setSelectedTitle(e.target.value)}
-        >
-        <option value="All">All</option>
-        <option value="TA">TA</option>
-        <option value="Student">Student</option>
-          {titles.map((title, index) => (
-            <option key={index} value={title}>
-              {title}
-            </option>
+        <Introduction />
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+
+          <Route
+            path="/add"
+            element={<AddProfilePage onAddProfile={addProfile} />}
+          />
+
+          <Route
+            path="/fetched"
+            element={
+              <FetchedProfilePage
+                fetchedProfiles={fetchedProfiles}
+                loading={loading} mode={mode}
+              />
+            }
+          />
+
+          <Route path="/about" element={<About />} />
+          <Route path="*" element={<NotFound />} />
+
+          <Route path="/profile" element={<ProfileLayout />}>
+            <Route path=":id" element={<ProfileDetail />} />
+          </Route>
+        </Routes>
+
+        <div className="controls">
+          <select
+            value={selectedTitle}
+            onChange={(e) => setSelectedTitle(e.target.value)}
+          >
+            <option value="All">All</option>
+
+            {(titles || []).map((title, index) => (
+              <option key={index} value={title}>
+                {title}
+              </option>
+            ))}
+          </select>
+
+          <input
+            type="text"
+            placeholder="Search by name"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+
+          <button onClick={handleReset}>Reset</button>
+        </div>
+
+        <Section title="Student Profiles">
+          {filteredProfiles.map((profile, index) => (
+            <Card
+              key={index}
+              image={profile.image}
+              name={profile.name}
+              title={profile.title}
+              year={profile.year}
+              major={profile.major}
+              isFeatured={profile.isFeatured}
+              mode={mode}
+            />
           ))}
-      </select>
+        </Section>
 
-      <input
-        type="text"
-        placeholder="Search by name"
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-      />
-
-      <button onClick={handleReset}>Reset</button>
-    </div>
-
-    <Section title="Student Profiles">
-      {filteredProfiles.map((profile, index) => (
-        <Card
-          key={index}
-          image={profile.image}
-          name={profile.name}
-          title={profile.title}
-          year={profile.year}
-          major={profile.major}
-          isFeatured={profile.isFeatured}
-          mode={mode}
-        />
-      ))}
-    </Section>
-    
-  </div>
-  </HashRouter>
+      </div>
+    </HashRouter>
   );
 };
-
 export default App;

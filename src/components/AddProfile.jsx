@@ -1,7 +1,10 @@
 import { useState } from "react";
 import "./AddProfile.css";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import TitlesContext from "../context/TitlesContext";
 
+const { titles } = useContext(TitlesContext);
 const AddProfile = ( { onAddProfile }) => {
     const [values, setValues] = useState({
         name: "",
