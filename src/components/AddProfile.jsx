@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import TitlesContext from "../context/TitlesContext";
 
-const { titles } = useContext(TitlesContext);
 const AddProfile = ( { onAddProfile }) => {
+    const { titles } = useContext(TitlesContext);
     const [values, setValues] = useState({
         name: "",
         email: "",
