@@ -22,7 +22,7 @@ import "./App.css";
 const App = () => {
 
   const { mode, toggleMode } = useContext(ModeContext);
-  const { titles } = useContext(ModeContext);
+  const { titles } = useContext(TitlesContext);
   const [selectedTitle, setSelectedTitle] = useState("All");
   const [searchText, setSearchText] = useState("");
   const [fetchedProfiles, setFetchedProfiles] = useState([]);
