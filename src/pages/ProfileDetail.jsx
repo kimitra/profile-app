@@ -1,30 +1,17 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import Card from "../components/Card";
 
-const ProfileDetail = ({ mode }) => {
-    const { id } = useParams();
-    const [profile, setProfile] = useState(null);
-    const [loading, setLoading] = useState(true);
+const ProfileDetail = ({ profiles }) => {
+  const { id } = useParams();
+  const profile = profiles[Number(id)];
 
-    useEffect(() => {
-        fetch(
-            `https://web.ics.purdue.edu/~zong6/profile-app/fetch-data-with-id.php?id=${id}`
-        )
-        .then((res) => res.json())
-        .then((data) => {
-            setProfile(data.profile);
-        })
-        .finally(() => setLoading(false));
-    }, [id]);
+  if (!profile) return <p>Profile not found.</p>;
 
-    if (loading) return <p>Loading...</p>;
-    if (!profile) return <p>Profile not found.</p>;
-
-    return (
-        <div className="section">
-            <Card {...profile} mode={mode} />
-        </div>
-    );
+  return (
+    <div className="section">
+      <Card id={id} {...profile} />
+    </div>
+  );
 };
+
 export default ProfileDetail;

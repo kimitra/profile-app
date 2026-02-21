@@ -14,6 +14,7 @@ export const TitlesProvider = ({ children }) => {
       .catch((err) => console.error(err));
   }, []);
 
+
   return (
     <TitlesContext.Provider value={{ titles }}>
       {children}

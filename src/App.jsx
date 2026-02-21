@@ -137,7 +137,7 @@ const App = () => {
           <Route path="*" element={<NotFound />} />
 
           <Route path="/profile" element={<ProfileLayout />}>
-            <Route path=":id" element={<ProfileDetail />} />
+            <Route path=":id" element={<ProfileDetail  profiles={profiles}/>} />
           </Route>
         </Routes>
 
@@ -169,6 +169,7 @@ const App = () => {
           {filteredProfiles.map((profile, index) => (
             <Card
               key={index}
+              id={index}
               image={profile.image}
               name={profile.name}
               title={profile.title}
