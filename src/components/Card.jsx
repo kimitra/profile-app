@@ -1,10 +1,13 @@
 import styles from "./Card.module.css";
 import { Link } from "react-router-dom";
-import { useRef, useLayoutEffect, useState } from "react";
+import React, { useRef, useLayoutEffect, useState } from "react";
+import { useContext } from "react";
+import ModeContext from "../context/ModeContext";
 
 const Card = ({ id, name, year, major, bio, title, image, isFeatured }) => {
   const cardRef = useRef(null);
   const [isWide, setIsWide] = useState(false);
+  const { mode } = useContext(ModeContext);
 
   useLayoutEffect(() => {
     if (cardRef.current) {
@@ -18,7 +21,7 @@ const Card = ({ id, name, year, major, bio, title, image, isFeatured }) => {
       <div
         className={`card ${isFeatured ? "featured" : ""} ${
           isWide ? "wide" : ""
-        }`}
+        } ${mode === "dark" ? "dark" : ""}`}
         ref={cardRef}
       >
         <img src={image} alt={name} className={styles.image} />
@@ -31,4 +34,4 @@ const Card = ({ id, name, year, major, bio, title, image, isFeatured }) => {
   );
 };
 
-export default Card;
+export default React.memo(Card);

@@ -14,6 +14,9 @@ import ProfileLayout from "./pages/ProfileLayout";
 import ProfileDetail from "./pages/ProfileDetail";
 import ModeContext from "./context/ModeContext";
 import TitlesContext from "./context/TitlesContext";
+import { useMemo } from "react";
+import { useCallback } from "react";
+import { Suspense, lazy } from "react";
 import "./App.css";
 
 
@@ -23,10 +26,13 @@ const App = () => {
 
   const { mode, toggleMode } = useContext(ModeContext);
   const { titles } = useContext(TitlesContext);
-  const [selectedTitle, setSelectedTitle] = useState("All");
+  const [selectedTitle, setSelectedTitle] = useState("");
   const [searchText, setSearchText] = useState("");
   const [fetchedProfiles, setFetchedProfiles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const AddProfilePage = lazy(() => import("./pages/AddProfilePage"));
+  const About = lazy(() => import("./pages/AboutPage"));
+  const ProfileDetail = lazy(() => import("./pages/ProfileDetail"));
 
   const [profiles, setProfiles] = useState([
     {
@@ -80,19 +86,28 @@ const App = () => {
 
   }, [selectedTitle, searchText]);
 
-  const addProfile = (newProfile) => {
+  const addProfile = useCallback((newProfile) => {
     setProfiles((prev) => [...prev, newProfile]);
-  };
+  }, []);
 
-  const filteredProfiles = profiles.filter((profile) => {
-    const matchesTitle =
-      selectedTitle === "All" || profile.title === selectedTitle;
+  const filteredProfiles = useMemo(() => {
+  return profiles.filter((profile) => {
+    if (!profile) return false;
 
-    const matchesSearch =
-      profile.name.toLowerCase().includes(searchText.toLowerCase());
+    const name = profile.name?.toLowerCase() || "";
+    const title = profile.title?.toLowerCase() || "";
 
-    return matchesTitle && matchesSearch;
+    const matchesSearch = searchText
+      ? name.includes(searchTerm.toLowerCase())
+      : true;
+
+    const matchesTitle = selectedTitle
+      ? profile.title === selectedTitle
+      : true;
+
+    return matchesSearch && matchesTitle;
   });
+}, [profiles, searchText, selectedTitle]);
 
   const handleReset = () => {
     setSelectedTitle("All");
@@ -114,33 +129,33 @@ const App = () => {
         </nav>
 
         <Introduction />
+        <Suspense fallback={<p>Loading...</p>}>
+          <Routes>
+            <Route path="/" element={<Home />} />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
+            <Route
+              path="/add"
+              element={<AddProfilePage onAddProfile={addProfile} />}
+            />
 
-          <Route
-            path="/add"
-            element={<AddProfilePage onAddProfile={addProfile} />}
-          />
+            <Route
+              path="/fetched"
+              element={
+                <FetchedProfilePage
+                  fetchedProfiles={fetchedProfiles}
+                  loading={loading} mode={mode}
+                />
+              }
+            />
 
-          <Route
-            path="/fetched"
-            element={
-              <FetchedProfilePage
-                fetchedProfiles={fetchedProfiles}
-                loading={loading} mode={mode}
-              />
-            }
-          />
+            <Route path="/about" element={<About />} />
+            <Route path="*" element={<NotFound />} />
 
-          <Route path="/about" element={<About />} />
-          <Route path="*" element={<NotFound />} />
-
-          <Route path="/profile" element={<ProfileLayout />}>
-            <Route path=":id" element={<ProfileDetail  profiles={profiles}/>} />
-          </Route>
-        </Routes>
-
+            <Route path="/profile" element={<ProfileLayout />}>
+              <Route path=":id" element={<ProfileDetail  profiles={profiles}/>} />
+            </Route>
+          </Routes>
+        </Suspense>
         <div className="controls">
           <select
             value={selectedTitle}
