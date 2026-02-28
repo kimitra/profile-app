@@ -1,41 +1,31 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext, useMemo, useCallback, Suspense, lazy } from "react";
 import { HashRouter, Routes, Route, Link } from "react-router-dom";
-import Card from "./components/Card";
 import Section from "./components/Section";
 import Introduction from "./components/Introduction";
-import Header from "./components/Header";
-import AddProfile from "./components/AddProfile";
 import Home from "./pages/Home";
-import AddProfilePage from "./pages/AddProfilePage";
 import FetchedProfilePage from "./pages/FetchedProfilePage";
-import About from "./pages/AboutPage";
 import NotFound from "./pages/NotFound";
 import ProfileLayout from "./pages/ProfileLayout";
-import ProfileDetail from "./pages/ProfileDetail";
 import ModeContext from "./context/ModeContext";
 import TitlesContext from "./context/TitlesContext";
-import { useMemo } from "react";
-import { useCallback } from "react";
-import { Suspense, lazy } from "react";
+import { useFetchProfiles } from "./hooks/useFetchProfiles";
 import "./App.css";
 
-
-
+const AddProfilePage = lazy(() => import("./pages/AddProfilePage"));
+const About = lazy(() => import("./pages/AboutPage"));
+const ProfileDetail = lazy(() => import("./pages/ProfileDetail"));
 
 const App = () => {
-
   const { mode, toggleMode } = useContext(ModeContext);
   const { titles } = useContext(TitlesContext);
-  const [selectedTitle, setSelectedTitle] = useState("");
-  const [searchText, setSearchText] = useState("");
-  const [fetchedProfiles, setFetchedProfiles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const AddProfilePage = lazy(() => import("./pages/AddProfilePage"));
-  const About = lazy(() => import("./pages/AboutPage"));
-  const ProfileDetail = lazy(() => import("./pages/ProfileDetail"));
 
-  const [profiles, setProfiles] = useState([
+  const [selectedTitle, setSelectedTitle] = useState("All");
+  const [searchText, setSearchText] = useState("");
+
+  /* ---------- LOCAL PROFILES ---------- */
+  const [localProfiles, setLocalProfiles] = useState([
     {
+      id: "local-1",
       image: "https://pbs.twimg.com/profile_images/2014810779845808128/m8uW-qWB_400x400.jpg",
       name: "Shane Hollander",
       title: "Student",
@@ -44,6 +34,7 @@ const App = () => {
       isFeatured: true,
     },
     {
+      id: "local-2",
       image: "https://pbs.twimg.com/profile_images/2014163555092672514/lBh7jSfO_400x400.jpg",
       name: "Ilya Rozanov",
       title: "Student",
@@ -52,6 +43,7 @@ const App = () => {
       isFeatured: false,
     },
     {
+      id: "local-3",
       image: "https://pbs.twimg.com/profile_images/2016633591388569602/LUDaWUDR_400x400.jpg",
       name: "Rose Landry",
       title: "TA",
@@ -60,54 +52,56 @@ const App = () => {
       isFeatured: true,
     },
     {
-    image: "https://pbs.twimg.com/profile_images/2012970250837331968/8Ltrzrrc_400x400.jpg",
+      id: "local-4",
+      image: "https://pbs.twimg.com/profile_images/2012970250837331968/8Ltrzrrc_400x400.jpg",
       name: "Svetlana Vetrova",
       title: "TA",
       year: "Senior",
       major: "Web Design",
       isFeatured: false,
-    },
+    }
   ]);
 
-  useEffect(() => {
-    setLoading(true);
+  const { apiProfiles, loading, error } = useFetchProfiles(
+  "https://web.ics.purdue.edu/~zong6/profile-app/fetch-data.php"
+);
 
-    const url = `https://web.ics.purdue.edu/~zong6/profile-app/fetch-data-with-filter.php?title=${
-      selectedTitle === "All" ? "" : selectedTitle
-    }&name=${searchText}&page=1&limit=10`;
-
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        setFetchedProfiles(data.profiles || []);
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-
-  }, [selectedTitle, searchText]);
-
+  /* ---------- Add Profile (Local Only) ---------- */
   const addProfile = useCallback((newProfile) => {
-    setProfiles((prev) => [...prev, newProfile]);
+    const profileWithId = {
+      ...newProfile,
+      id: `local-${Date.now()}`
+    };
+    setLocalProfiles((prev) => [...prev, profileWithId]);
   }, []);
 
-  const filteredProfiles = useMemo(() => {
+  const filterProfiles = useCallback((profiles) => {
   return profiles.filter((profile) => {
-    if (!profile) return false;
-
     const name = profile.name?.toLowerCase() || "";
-    const title = profile.title?.toLowerCase() || "";
+    const title = profile.title || "";
 
     const matchesSearch = searchText
-      ? name.includes(searchTerm.toLowerCase())
+      ? name.includes(searchText.toLowerCase())
       : true;
 
-    const matchesTitle = selectedTitle
-      ? profile.title === selectedTitle
-      : true;
+    const matchesTitle =
+      selectedTitle !== "All"
+        ? title === selectedTitle
+        : true;
 
     return matchesSearch && matchesTitle;
   });
-}, [profiles, searchText, selectedTitle]);
+}, [searchText, selectedTitle]);
+
+  const filteredLocalProfiles = useMemo(
+  () => filterProfiles(localProfiles),
+  [localProfiles, filterProfiles]
+);
+
+const filteredApiProfiles = useMemo(
+  () => filterProfiles(apiProfiles),
+  [apiProfiles, filterProfiles]
+);
 
   const handleReset = () => {
     setSelectedTitle("All");
@@ -125,44 +119,62 @@ const App = () => {
           <Link to="/about">About</Link>
           <button className="mode-button" onClick={toggleMode}>
             Switch to {mode === "light" ? "Dark" : "Light"} Mode
-            </button>
+          </button>
         </nav>
 
         <Introduction />
+
         <Suspense fallback={<p>Loading...</p>}>
           <Routes>
-            <Route path="/" element={<Home />} />
 
+            {/* LOCAL HOME PAGE */}
+            <Route
+              path="/"
+              element={<Home profiles={filteredLocalProfiles} />}
+            />
+
+            {/* ADD LOCAL PROFILE */}
             <Route
               path="/add"
               element={<AddProfilePage onAddProfile={addProfile} />}
             />
 
+            {/* API PAGE */}
             <Route
               path="/fetched"
               element={
                 <FetchedProfilePage
-                  fetchedProfiles={fetchedProfiles}
-                  loading={loading} mode={mode}
+                  fetchedProfiles={filteredApiProfiles}
+                  loading={loading}
                 />
               }
             />
 
             <Route path="/about" element={<About />} />
-            <Route path="*" element={<NotFound />} />
 
+            {/* PROFILE DETAIL (works for both) */}
             <Route path="/profile" element={<ProfileLayout />}>
-              <Route path=":id" element={<ProfileDetail  profiles={profiles}/>} />
+              <Route
+                path=":id"
+                element={
+                  <ProfileDetail
+                    localProfiles={localProfiles}
+                    apiProfiles={apiProfiles}
+                  />
+                }
+              />
             </Route>
+
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
+
         <div className="controls">
           <select
             value={selectedTitle}
             onChange={(e) => setSelectedTitle(e.target.value)}
           >
             <option value="All">All</option>
-
             {(titles || []).map((title, index) => (
               <option key={index} value={title}>
                 {title}
@@ -180,24 +192,10 @@ const App = () => {
           <button onClick={handleReset}>Reset</button>
         </div>
 
-        <Section title="Student Profiles">
-          {filteredProfiles.map((profile, index) => (
-            <Card
-              key={index}
-              id={index}
-              image={profile.image}
-              name={profile.name}
-              title={profile.title}
-              year={profile.year}
-              major={profile.major}
-              isFeatured={profile.isFeatured}
-              mode={mode}
-            />
-          ))}
-        </Section>
-
+        {error && <p className="error">{error}</p>}
       </div>
     </HashRouter>
   );
 };
+
 export default App;

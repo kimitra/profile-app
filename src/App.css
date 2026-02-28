@@ -64,6 +64,10 @@
   background-color: #111827;
   color: white;
 }
+.app.dark .card {
+  background-color: #1f2933;
+  color: white;
+}
 .app.dark .section h2,
 .app.dark .about {
   color: white;
@@ -103,7 +107,7 @@
   cursor: pointer;
 }
 .mode-button:hover {
-    background-color: #1d4ed8;
+    background-color: lightgrey;
 }
 .not-found {
   text-align: center;
