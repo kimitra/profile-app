@@ -22,7 +22,6 @@ const App = () => {
   const [selectedTitle, setSelectedTitle] = useState("All");
   const [searchText, setSearchText] = useState("");
 
-  /* ---------- LOCAL PROFILES ---------- */
   const [localProfiles, setLocalProfiles] = useState([
     {
       id: "local-1",
@@ -66,7 +65,6 @@ const App = () => {
   "https://web.ics.purdue.edu/~zong6/profile-app/fetch-data.php"
 );
 
-  /* ---------- Add Profile (Local Only) ---------- */
   const addProfile = useCallback((newProfile) => {
     const profileWithId = {
       ...newProfile,
@@ -126,20 +124,14 @@ const filteredApiProfiles = useMemo(
 
         <Suspense fallback={<p>Loading...</p>}>
           <Routes>
-
-            {/* LOCAL HOME PAGE */}
             <Route
               path="/"
               element={<Home profiles={filteredLocalProfiles} />}
             />
-
-            {/* ADD LOCAL PROFILE */}
             <Route
               path="/add"
               element={<AddProfilePage onAddProfile={addProfile} />}
             />
-
-            {/* API PAGE */}
             <Route
               path="/fetched"
               element={
@@ -149,10 +141,7 @@ const filteredApiProfiles = useMemo(
                 />
               }
             />
-
             <Route path="/about" element={<About />} />
-
-            {/* PROFILE DETAIL (works for both) */}
             <Route path="/profile" element={<ProfileLayout />}>
               <Route
                 path=":id"
@@ -164,7 +153,6 @@ const filteredApiProfiles = useMemo(
                 }
               />
             </Route>
-
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
