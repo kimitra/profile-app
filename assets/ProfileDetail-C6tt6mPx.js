@@ -1,0 +1,1 @@
+import{a as t,j as s,C as d}from"./index-Dh2S1bj6.js";const f=({localProfiles:e,apiProfiles:n})=>{const{id:r}=t(),a=e.find(i=>i.id===r)||n.find(i=>String(i.id)===r);return a?s.jsx("div",{className:"card-wrapper",children:s.jsx(d,{id:r,...a})}):s.jsx("p",{children:"Profile not found."})};export{f as default};

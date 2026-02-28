@@ -1,1 +1,0 @@
-import{a as t,j as s,C as a}from"./index-IVKWtX87.js";const n=({profiles:o})=>{const{id:r}=t(),e=o[Number(r)];return e?s.jsx("div",{className:"section",children:s.jsx(a,{id:r,...e})}):s.jsx("p",{children:"Profile not found."})};export{n as default};
